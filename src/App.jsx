@@ -53,7 +53,7 @@ function App() {
     };
   
     setHistory((prevState) => [...prevState, userObj]);
-    setInput(''); // Clear input after sending
+    setInput('');
     setLoading(true);
   
     try {
