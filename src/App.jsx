@@ -46,7 +46,7 @@ function App() {
   // };
 
   const onSend = async () => {
-    const appendedInput = `${input} using function App without imports and exports and inline styles `;
+    const appendedInput = `${input} in react using function App,inline styles without imports and exports `;
     const userObj = {
       role: 'user',
       parts: [{ text: appendedInput }],
