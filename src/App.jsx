@@ -388,8 +388,15 @@ function App() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ message: input, history: updatedHistory }),
+        body: JSON.stringify({ message: `${input} in react using function App,inline styles without imports and exports`, history: updatedHistory }),
       });
+      // const response = await fetch('http://localhost:3031/chat', {
+      //   method: 'POST',
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //   },
+      //   body: JSON.stringify({ message: input, history: updatedHistory }),
+      // });
 
       const data = await response.json();
       const resObj = {
