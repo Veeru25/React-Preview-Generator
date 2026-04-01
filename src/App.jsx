@@ -336,12 +336,183 @@
 // export default App;
 
 
-import { useState, useEffect } from 'react';
+// import { useState, useEffect } from 'react';
+// import Markdown from 'markdown-to-jsx';
+// import ClipLoader from 'react-spinners/ClipLoader';
+// import CodeWithPreview from './CodeWithPreview';
+// import { Button, TextField, Box, Typography } from '@mui/material';
+// import './App.css';
+
+// function App() {
+//   const [input, setInput] = useState('');
+//   const [history, setHistory] = useState([]);
+//   const [loading, setLoading] = useState(false);
+//   const [savedHistory, setSavedHistory] = useState([]);
+
+//   useEffect(() => {
+//     const storedHistory = localStorage.getItem('chatHistory');
+//     if (storedHistory) {
+//       try {
+//         const parsedHistory = JSON.parse(storedHistory);
+//         setSavedHistory(parsedHistory);
+//         setHistory(parsedHistory); 
+//       } catch (error) {
+//         console.error('Error parsing chat history:', error);
+//       }
+//     }
+//   }, []);
+
+//   useEffect(() => {
+//     if (history.length > 0) {
+//       localStorage.setItem('chatHistory', JSON.stringify(history));
+//       console.log('Saved updated history to localStorage:', history);
+//     }
+//   }, [history]);
+
+//   const onSend = async () => {
+//     if (!input.trim()) return;
+
+//     const userObj = {
+//       role: 'user',
+//       parts: [{ text: input }],
+//     };
+
+//     const updatedHistory = [...history, userObj];
+//     setHistory(updatedHistory);
+//     setInput('');
+//     setLoading(true);
+
+//     try {
+//     //   const response = await fetch('https://react-preview-generator-server.vercel.app/chat', {
+//     //     method: 'POST',
+//     //     headers: {
+//     //       'Content-Type': 'application/json',
+//     //     },
+//     //     body: JSON.stringify({ message: `${input} in react using function App,inline styles without imports and exports`, history: updatedHistory }),
+//     //   });
+//       const response = await fetch('http://localhost:3031/chat', {
+//         method: 'POST',
+//         headers: {
+//           'Content-Type': 'application/json',
+//         },
+//         body: JSON.stringify({ message: input, history: updatedHistory }),
+//       });
+
+//       const data = await response.json();
+//       const resObj = {
+//         role: 'model',
+//         parts: [{ text: data.message }],
+//       };
+
+//       setHistory((prevState) => [...prevState, resObj]);
+//     } catch (error) {
+//       console.error('Error fetching data:', error);
+//     }
+//     setLoading(false);
+//   };
+
+//   const handleInput = (e) => {
+//     setInput(e.target.value);
+//   };
+
+//   const onNewChat = () => {
+//     setHistory([]);
+//     setSavedHistory([]);
+//     localStorage.removeItem('chatHistory'); 
+//     setInput('');
+//     setLoading(false);
+//   };
+
+//   return (
+//     <Box className="container">
+//       <h1 className="react-heading">React Code and Preview Generator</h1>
+//       <Box className="header">
+//         <Button
+//           className="new-chat-btn"
+//           variant="contained"
+//           size="large"
+//           onClick={onNewChat}
+//           aria-label="Start a new chat"
+//           sx={{ backgroundColor: '#000' }}
+//         >
+//           New Chat
+//         </Button>
+
+//         <TextField
+//           className="input-field"
+//           variant="outlined"
+//           label="Ask Here..."
+//           value={input}
+//           onChange={handleInput}
+//         />
+
+//         <Button
+//           className="send-btn"
+//           variant="contained"
+//           color="primary"
+//           size="large"
+//           onClick={onSend}
+//           sx={{ backgroundColor: '#007bff' }}
+//         >
+//           {loading ? <ClipLoader color="#fff" size={20} /> : 'Send'}
+//         </Button>
+//       </Box>
+
+//       <Box className={`chat-history ${history.length > 0 ? 'with-padding' : ''}`}>
+//         {history.map((el, index) => (
+//           <Box key={index} className="message-container">
+//             <Typography
+//               className={`chat-message ${el.role === 'user' ? 'user-message' : 'gpt-message'}`}
+//             >
+//               {el.parts.map((part, i) => {
+//                 const text = part.text;
+//                 const segments = text.split(/(```[\s\S]*?```)/g);
+
+//                 return segments.map((segment, j) => {
+//                   if (segment.startsWith('```') && segment.endsWith('```')) {
+//                     const codeWithMetadata = segment.slice(3, -3);
+//                     const [type, ...codeLines] = codeWithMetadata.split('\n');
+//                     const code = codeLines.join('\n');
+//                     return (
+//                       <div key={`${i}-${j}`}>
+//                         <Typography variant="caption" color="#000">
+//                           TYPE : {type}
+//                         </Typography>
+//                         <CodeWithPreview key={`${i}-${j}`} code={code} />
+//                       </div>
+//                     );
+//                   } else {
+//                     return (
+//                       <Markdown className="explain-container" key={`${i}-${j}`}>
+//                         {segment}
+//                       </Markdown>
+//                     );
+//                   }
+//                 });
+//               })}
+//             </Typography>
+//           </Box>
+//         ))}
+//         {loading && (
+//           <div>
+//             <ClipLoader color="#4A90E2" size={15} />
+//             <span className="span-loading">...Loading</span>
+//           </div>
+//         )}
+//       </Box>
+//     </Box>
+//   );
+// }
+
+// export default App;
+
+
+import React, { useState, useEffect } from 'react';
 import Markdown from 'markdown-to-jsx';
 import ClipLoader from 'react-spinners/ClipLoader';
-import CodeWithPreview from './CodeWithPreview';
-import { Button, TextField, Box, Typography } from '@mui/material';
+import { Button, TextField, Box, Typography, Modal, Tooltip, CircularProgress } from '@mui/material';
 import './App.css';
+import './CodeWithPreview.css';
 
 function App() {
   const [input, setInput] = useState('');
@@ -365,7 +536,6 @@ function App() {
   useEffect(() => {
     if (history.length > 0) {
       localStorage.setItem('chatHistory', JSON.stringify(history));
-      console.log('Saved updated history to localStorage:', history);
     }
   }, [history]);
 
@@ -388,15 +558,9 @@ function App() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ message: `${input} in react using function App,inline styles without imports and exports`, history: updatedHistory }),
+        // body: JSON.stringify({ message: `${input} in react using function App,inline styles without imports and exports`, history: updatedHistory }),
+        body: JSON.stringify({ message: `${input}`, history: updatedHistory }),
       });
-      // const response = await fetch('http://localhost:3031/chat', {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //   },
-      //   body: JSON.stringify({ message: input, history: updatedHistory }),
-      // });
 
       const data = await response.json();
       const resObj = {
@@ -418,9 +582,92 @@ function App() {
   const onNewChat = () => {
     setHistory([]);
     setSavedHistory([]);
-    localStorage.removeItem('chatHistory'); 
+    localStorage.removeItem('chatHistory');
     setInput('');
     setLoading(false);
+  };
+
+  const CodeWithPreview = ({ code }) => {
+    const [openModal, setOpenModal] = useState(false);
+    const [iframeContent, setIframeContent] = useState('');
+    const [loadingPreview, setLoadingPreview] = useState(true);
+
+    const handlePreviewToggle = () => {
+      setOpenModal(!openModal);
+      setLoadingPreview(true);
+    };
+
+    useEffect(() => {
+      const htmlTemplate = `
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+          <meta charset="UTF-8" />
+          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+          <title>React Preview</title>
+          <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+          <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+          <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+          <style>
+            body { font-family: Arial, sans-serif; padding: 20px; }
+          </style>
+        </head>
+        <body>
+          <div id="root"></div>
+          <script type="text/babel">
+            ${code}
+            ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+          </script>
+        </body>
+        </html>
+      `;
+      setIframeContent(htmlTemplate);
+    }, [code]);
+
+    return (
+      <Box className="code-box">
+        <Box className="button-container">
+          <Tooltip title="Copy Code" arrow>
+            <Button
+              className="copy-button"
+              onClick={() => navigator.clipboard.writeText(code)}
+            >
+              &#x2398;
+            </Button>
+          </Tooltip>
+        </Box>
+
+        <pre>
+          <code>{code}</code>
+        </pre>
+        <Box className="preview-button-container">
+          <Button className="preview-button" onClick={handlePreviewToggle}>
+            {openModal ? 'Close Preview' : 'Preview Output'}
+          </Button>
+        </Box>
+        <Modal
+          open={openModal}
+          onClose={handlePreviewToggle}
+          className="modal-container"
+        >
+          <Box className="modal-content">
+            <Typography variant="h6" className="modal-header">
+              Preview Output
+            </Typography>
+
+            {loadingPreview && <CircularProgress className="modal-loading" />}
+
+            <iframe
+              title="output-preview"
+              srcDoc={iframeContent}
+              sandbox="allow-scripts allow-same-origin"
+              className={`modal-iframe ${!loadingPreview ? 'loaded' : ''}`}
+              onLoad={() => setLoadingPreview(false)}
+            ></iframe>
+          </Box>
+        </Modal>
+      </Box>
+    );
   };
 
   return (
